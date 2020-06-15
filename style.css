@@ -1,0 +1,131 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Raleway", sans-serif;
+}
+
+path,
+i,
+svg {
+  pointer-events: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: "Raleway", sans-serif;
+}
+
+.colors {
+  height: 80vh;
+  display: flex;
+  flex-direction: row;
+  color: black;
+}
+
+.color {
+  height: 80vh;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  position: relative;
+  overflow: hidden;
+}
+
+.color-controls {
+  display: flex;
+  flex-direction: column;
+}
+
+.color-controls button {
+  font-size: 1.5rem;
+  border: none;
+  background-color: transparent;
+  margin: 1.5rem;
+}
+
+.color-controls button {
+  color: black;
+}
+
+.color h2 {
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.sliders {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 0%;
+  background-color: white;
+  padding: 1rem;
+  width: 80%;
+  border-top-right-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
+
+  opacity: 0;
+  transform: translateY(150px);
+  pointer-events: none;
+  transition: all 0.6s ease-in-out;
+}
+
+.sliders.active {
+  opacity: 1;
+  transform: translateY(0px);
+  pointer-events: all;
+}
+
+.sliders button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.4rem;
+  border-top-right-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  border: none;
+  background-color: navy;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  margin: 1rem 0rem;
+  width: 100%;
+  position: relative;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+
+.panels {
+  height: 20vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  text-align: center;
+}
+
+.panels button {
+  padding: 0.3rem 0.5rem;
+  font-size: 1.5rem;
+  border: none;
+  background-color: #1c3f80;
+  color: white;
+  border-radius: 5px;
+}
+
+.panels p {
+  margin: 0.5rem;
+  font-size: 1rem;
+  color: black;
+}
