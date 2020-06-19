@@ -8,6 +8,8 @@ class Colors {
     this.generateBtn = document.querySelector(".generate-btn");
     this.generateText = document.querySelector(".generate-panel p");
     this.currentHexes = document.querySelectorAll(".color h2");
+    this.copyCon = document.querySelector(".copy-container");
+    this.copyPop = document.querySelector(".copy-popup");
     this.initialColors = [];
   }
   randomHex() {
@@ -30,8 +32,7 @@ class Colors {
   generateColor() {
     this.colorDivs.forEach((div) => {
       const hexText = div.children[0];
-      const btnSlider = div.children[1].children[0];
-      const btnLock = div.children[1].children[1];
+      const icons = div.querySelectorAll(".color-controls button");
       const currentValue = this.randomHex();
 
       if (div.classList.contains("locked")) {
@@ -42,8 +43,9 @@ class Colors {
         hexText.innerText = currentValue;
         div.style.backgroundColor = currentValue;
         this.checkContrast(currentValue, hexText);
-        this.checkContrast(currentValue, btnSlider);
-        this.checkContrast(currentValue, btnLock);
+        icons.forEach((icon) => {
+          this.checkContrast(currentValue, icon);
+        });
 
         const sliders = div.querySelectorAll(".sliders input");
         const color = chroma(currentValue);
@@ -54,6 +56,7 @@ class Colors {
         this.colorizeSliders(color, hue, brightness, saturation);
       }
     });
+    this.setDefault();
   }
   refreshBtn() {
     let count = 0;
@@ -66,7 +69,6 @@ class Colors {
     this.sliders.forEach((slider) => {
       if (slider.classList.contains(event.target.classList[1])) {
         slider.classList.toggle("active");
-        console.log(slider);
       }
     });
   }
@@ -93,6 +95,75 @@ class Colors {
     saturation.style.backgroundImage = `linear-gradient(to right,${satScale(
       0
     )},${satScale(1)})`;
+  }
+  updateBG(e) {
+    const sliders = e.target.parentElement.querySelectorAll("input");
+    const currentColor = e.target.parentElement.parentElement.querySelector(
+      "h2"
+    ).innerText;
+    const hue = sliders[0];
+    const brightness = sliders[1];
+    const saturation = sliders[2];
+
+    const color = chroma(currentColor) //currentColor를 텍스트로 가져와서 색변경
+      .set("hsl.h", hue.value)
+      .set("hsl.l", brightness.value)
+      .set("hsl.s", saturation.value);
+
+    e.target.parentElement.parentElement.style.backgroundColor = color;
+
+    this.colorizeSliders(color, hue, brightness, saturation);
+  }
+  updateTextUI(e) {
+    const activeDiv = e.target.parentElement.parentElement;
+    const color = chroma(activeDiv.style.backgroundColor).hex();
+    const colorText = activeDiv.querySelector("h2");
+    const icons = activeDiv.querySelectorAll(".color-controls button");
+
+    colorText.innerText = color;
+
+    this.checkContrast(color, colorText);
+    icons.forEach((icon) => {
+      this.checkContrast(color, icon);
+    });
+  }
+  setDefault() {
+    const sliders = document.querySelectorAll('input[type="range"]');
+    sliders.forEach((slider) => {
+      if (slider.name === "hue") {
+        const hueColor = this.initialColors[slider.getAttribute("data-hue")];
+        const hueValue = Math.floor(chroma(hueColor).hsl()[0]);
+        slider.value = hueValue;
+      }
+      if (slider.name === "brightness") {
+        const brightColor = this.initialColors[
+          slider.getAttribute("data-bright")
+        ];
+        const brightValue =
+          Math.floor(chroma(brightColor).hsl()[2] * 100) / 100;
+        slider.value = brightValue;
+      }
+      if (slider.name === "saturation") {
+        const satColor = this.initialColors[slider.getAttribute("data-sat")];
+        const satValue = Math.floor(chroma(satColor).hsl()[1] * 100) / 100;
+        slider.value = satValue;
+      }
+    });
+  }
+  copyToClip(e) {
+    const el = document.createElement("textarea");
+    document.body.appendChild(el);
+    el.value = e.target.innerText;
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+
+    this.copyCon.classList.add("active");
+    this.copyPop.classList.add("active");
+    setTimeout(() => {
+      this.copyCon.classList.remove("active");
+      this.copyPop.classList.remove("active");
+    }, 1500);
   }
   closeSlider(e) {
     e.target.parentElement.classList.remove("active");
@@ -123,6 +194,22 @@ function init() {
   colors.generateBtn.addEventListener("click", () => {
     colors.generateColor();
     colors.refreshBtn();
+  });
+
+  colors.sliders.forEach((slider) => {
+    slider.addEventListener("input", (e) => {
+      colors.updateBG(e);
+    });
+  });
+
+  colors.colorDivs.forEach((div) => {
+    div.addEventListener("change", (e) => colors.updateTextUI(e));
+  }); //sliders eventlistener change fine too but this code is more neat
+
+  colors.currentHexes.forEach((hex) => {
+    hex.addEventListener("click", (e) => {
+      colors.copyToClip(e);
+    });
   });
 }
 
