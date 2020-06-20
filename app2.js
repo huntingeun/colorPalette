@@ -10,7 +10,12 @@ class Colors {
     this.currentHexes = document.querySelectorAll(".color h2");
     this.copyCon = document.querySelector(".copy-container");
     this.copyPop = document.querySelector(".copy-popup");
-    this.initialColors = [];
+    this.saveCon = document.querySelector(".save-container");
+    this.savePop = document.querySelector(".save-popup");
+    this.saveClose = document.querySelector(".close-save");
+    this.saveBtn = document.querySelector(".save-btn");
+    this.saveSubmit = document.querySelector(".submit-save");
+    this.initialColors;
   }
   randomHex() {
     const letters = "0123456789ABCDEF";
@@ -30,6 +35,8 @@ class Colors {
     }
   }
   generateColor() {
+    this.initialColors = [];
+
     this.colorDivs.forEach((div) => {
       const hexText = div.children[0];
       const icons = div.querySelectorAll(".color-controls button");
@@ -56,9 +63,10 @@ class Colors {
         this.colorizeSliders(color, hue, brightness, saturation);
       }
     });
+    //default colorizer
     this.setDefault();
-  }
-  refreshBtn() {
+
+    //generate to refresh
     let count = 0;
     count++;
     if (count !== 0) {
@@ -168,6 +176,40 @@ class Colors {
   closeSlider(e) {
     e.target.parentElement.classList.remove("active");
   }
+  showSave() {
+    this.saveCon.classList.add("active");
+    this.savePop.classList.add("active");
+  }
+  closeSave() {
+    this.saveCon.classList.remove("active");
+    this.savePop.classList.remove("active");
+  }
+  saveToLocal(paletteObj) {
+    let localPalettes;
+    const loadedPalette = localStorage.getItem("Palettes");
+    if (loadedPalette === null) {
+      localPalettes = [];
+    } else {
+      localPalettes = JSON.parse(loadedPalette);
+    }
+
+    localPalettes.push(paletteObj);
+    localStorage.setItem("Palettes", JSON.stringify(localPalettes));
+  }
+  submitSave() {
+    this.saveCon.classList.remove("active");
+    this.savePop.classList.remove("active");
+
+    const input = document.querySelector(".save-name");
+    const name = input.value;
+    const paletteObj = {
+      name,
+      colors: this.initialColors,
+    };
+
+    this.saveToLocal(paletteObj);
+    input.value = "";
+  }
 }
 
 function init() {
@@ -193,7 +235,6 @@ function init() {
 
   colors.generateBtn.addEventListener("click", () => {
     colors.generateColor();
-    colors.refreshBtn();
   });
 
   colors.sliders.forEach((slider) => {
@@ -210,6 +251,16 @@ function init() {
     hex.addEventListener("click", (e) => {
       colors.copyToClip(e);
     });
+  });
+
+  colors.saveBtn.addEventListener("click", () => {
+    colors.showSave();
+  });
+  colors.saveClose.addEventListener("click", () => {
+    colors.closeSave();
+  });
+  colors.saveSubmit.addEventListener("click", () => {
+    colors.submitSave();
   });
 }
 

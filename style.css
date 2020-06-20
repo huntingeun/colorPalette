@@ -149,6 +149,7 @@ input[type="range"] {
   text-align: center;
 
   opacity: 0;
+  transition: all 0.5s ease-in-out;
   pointer-events: none;
 }
 
@@ -173,4 +174,126 @@ input[type="range"] {
 
 .copy-popup.active {
   transform: translateY(0rem);
+}
+
+.save-container,
+.library-container {
+  background: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.5s ease-in-out;
+}
+
+.save-container.active,
+.library-container.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.save-popup,
+.library-popup {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: white;
+  padding: 2rem;
+  border-radius: 4px;
+
+  transition: transform 0.5s ease;
+  transform: translateY(-2rem);
+}
+
+.save-popup.active,
+.library-popup.active {
+  transform: translateY(0rem);
+}
+
+.save-popup .close-save,
+.library-popup .close-library {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-top-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  cursor: pointer;
+  padding: 0.3rem;
+  font-weight: bold;
+
+  border: none;
+  background-color: navy;
+  color: white;
+}
+
+.save-popup input {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.3rem;
+  font-family: "Raleway", sans-serif;
+}
+
+.save-popup .submit-save {
+  min-width: 30%;
+  padding: 0.5rem 0.4rem;
+  margin-top: 1rem;
+
+  border-radius: 5px;
+
+  border: none;
+  background-color: navy;
+  color: white;
+}
+
+.library-popup {
+  min-width: 40%;
+  padding: 2rem;
+  justify-content: flex-start;
+  overflow-y: scroll;
+  max-height: 50vh;
+}
+
+.library-popup h3 {
+  margin-bottom: 1rem;
+}
+
+.custom-palette {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+.custom-palette h4 {
+  flex: 1;
+}
+.small-preview {
+  display: flex;
+}
+
+.small-preview div {
+  height: 2rem;
+  min-width: 2rem;
+}
+
+.custom-palette button {
+  padding: 0.5rem 0.4rem;
+
+  border: none;
+  background-color: navy;
+  color: white;
 }
