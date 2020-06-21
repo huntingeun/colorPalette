@@ -127,19 +127,6 @@ function hslControls(e) {
   colorizeSliders(color, hue, brightness, saturation);
 }
 
-// function updateTextUI(index) {
-//   const activeDiv = colorDivs[index];
-//   const color = chroma(activeDiv.style.backgroundColor);
-//   const text = activeDiv.querySelector("h2");
-//   const icons = activeDiv.querySelectorAll(".color-controls button");
-
-//   text.innerText = color.hex();
-//   checkContrast(color, text);
-//   for (icon of icons) {
-//     checkContrast(color, icon);
-//   } //you can use forEach loop as well
-// }
-
 function updateTextUI(event) {
   const div = event.target.parentElement.parentElement;
   const color = chroma(div.style.backgroundColor).hex();
@@ -218,13 +205,21 @@ function showSave() {
   savePop.classList.add("active");
 }
 
-function savePalette() {
+function savePalette(e) {
   saveCon.classList.remove("active");
   savePop.classList.remove("active");
 
   const input = document.querySelector(".save-popup input");
   const name = input.value;
-  let paletteNr = paletteArray.length;
+
+  let paletteNr;
+  const paletteObjects = JSON.parse(localStorage.getItem("Palettes"));
+  if (paletteObjects) {
+    paletteNr = paletteObjects.length;
+  } else {
+    paletteNr = paletteArray.length;
+  }
+
   const paletteObj = {
     name,
     colors: initialColors,
@@ -255,6 +250,7 @@ function savePalette() {
     closeLibrary();
     initialColors = [];
     const index = event.target.classList[1];
+    console.log(paletteArray[index].colors);
     paletteArray[index].colors.forEach((color, index) => {
       initialColors.push(color);
       colorDivs[index].style.backgroundColor = color;
@@ -265,6 +261,14 @@ function savePalette() {
       for (icon of icons) {
         checkContrast(color, icon);
       }
+
+      const newColor = chroma(color);
+      const sliders = colorDivs[index].querySelectorAll(".sliders input");
+      const hue = sliders[0];
+      const brightness = sliders[1];
+      const saturation = sliders[2];
+
+      colorizeSliders(newColor, hue, brightness, saturation);
     });
 
     setDefaultValue();
@@ -303,19 +307,78 @@ function closeLibrary() {
   libPop.classList.remove("active");
 }
 
+function loadLocal() {
+  if (localStorage.getItem("Palettes") === null) {
+    localPalettes = [];
+  } else {
+    const paletteObjects = JSON.parse(localStorage.getItem("Palettes"));
+
+    //*2
+    paletteArray = [...paletteObjects];
+
+    paletteObjects.forEach((paletteObj) => {
+      const palette = document.createElement("div");
+      palette.classList.add("custom-palette");
+      const title = document.createElement("h4");
+      title.innerText = paletteObj.name;
+      const preview = document.createElement("div");
+      preview.classList.add("small-preview");
+      paletteObj.colors.forEach((color) => {
+        const smallDiv = document.createElement("div");
+        smallDiv.style.backgroundColor = color;
+        preview.appendChild(smallDiv);
+      });
+      const paletteBtn = document.createElement("button");
+      paletteBtn.classList.add("pick-palette-btn");
+      paletteBtn.classList.add(paletteObj.nr);
+      paletteBtn.innerText = "select";
+
+      paletteBtn.addEventListener("click", () => {
+        closeLibrary();
+        initialColors = [];
+        const index = event.target.classList[1];
+        paletteArray[index].colors.forEach((color, index) => {
+          initialColors.push(color);
+          colorDivs[index].style.backgroundColor = color;
+          const text = colorDivs[index].querySelector("h2");
+          text.innerText = color;
+          const icons = colorDivs[index].querySelectorAll(
+            ".color-controls button"
+          );
+          checkContrast(color, text);
+          for (icon of icons) {
+            checkContrast(color, icon);
+          }
+
+          const newColor = chroma(color);
+          const sliders = colorDivs[index].querySelectorAll(".sliders input");
+          const hue = sliders[0];
+          const brightness = sliders[1];
+          const saturation = sliders[2];
+
+          colorizeSliders(newColor, hue, brightness, saturation);
+        });
+
+        setDefaultValue();
+      });
+
+      libPop.appendChild(palette);
+      palette.appendChild(title);
+      palette.appendChild(preview);
+      palette.appendChild(paletteBtn);
+    });
+  }
+}
+
+loadLocal();
+randomColors();
+
 //Event Listeners
 generateBtn.addEventListener("click", randomColors);
 
 sliders.forEach((slider) => {
   slider.addEventListener("input", hslControls);
 });
-
-// colorDivs.forEach((div, index) => {
-//   div.addEventListener("change", (index) => {
-//     updateTextUI(index);
-//   });
-// });
-// BG가 슬라이더 인풋으로 매번 바뀐다는 전제하에 적용 가능한 이벤트리스너다
 
 sliders.forEach((slider) => {
   slider.addEventListener("change", (event) => {
