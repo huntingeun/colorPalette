@@ -22,6 +22,7 @@ class Colors {
 
     this.initialColors;
     this.paletteArray = [];
+    this.localPalettes;
   }
   randomHex() {
     const letters = "0123456789ABCDEF";
@@ -199,16 +200,15 @@ class Colors {
     this.libPop.classList.remove("active");
   }
   saveToLocal(paletteObj) {
-    let localPalettes;
     const loadedPalette = localStorage.getItem("Palettes");
     if (loadedPalette === null) {
-      localPalettes = [];
+      this.localPalettes = [];
     } else {
-      localPalettes = JSON.parse(loadedPalette);
+      this.localPalettes = JSON.parse(loadedPalette);
     }
 
-    localPalettes.push(paletteObj);
-    localStorage.setItem("Palettes", JSON.stringify(localPalettes));
+    this.localPalettes.push(paletteObj);
+    localStorage.setItem("Palettes", JSON.stringify(this.localPalettes));
   }
   submitSave() {
     this.saveCon.classList.remove("active");
@@ -290,7 +290,7 @@ class Colors {
   }
   loadLocal() {
     if (localStorage.getItem("Palettes") === null) {
-      localPalettes = [];
+      this.localPalettes = [];
     } else {
       const paletteObjects = JSON.parse(localStorage.getItem("Palettes"));
 
