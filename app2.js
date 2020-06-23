@@ -215,6 +215,8 @@ class Colors {
 function init() {
   const colors = new Colors();
 
+  colors.generateColor();
+
   colors.adjustBtns.forEach((btn) => {
     btn.addEventListener("click", (event) => {
       colors.sliderActive(event);

@@ -297,3 +297,14 @@ input[type="range"] {
   background-color: navy;
   color: white;
 }
+
+@media (max-width: 660px) {
+  .color h2
+  {font-size:  1rem;}
+  
+    .library-panel p,
+  .generate-panel p,
+  .save-panel p{
+    font-size:  0.8rem;}
+  }
+}
