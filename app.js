@@ -250,7 +250,6 @@ function savePalette(e) {
     closeLibrary();
     initialColors = [];
     const index = event.target.classList[1];
-    console.log(paletteArray[index].colors);
     paletteArray[index].colors.forEach((color, index) => {
       initialColors.push(color);
       colorDivs[index].style.backgroundColor = color;
