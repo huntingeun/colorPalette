@@ -135,12 +135,18 @@ class Colors {
     const colorText = activeDiv.querySelector("h2");
     const icons = activeDiv.querySelectorAll(".color-controls button");
 
-    colorText.innerText = color;
+    colorText.innerText = color.toUpperCase();
 
     this.checkContrast(color, colorText);
     icons.forEach((icon) => {
       this.checkContrast(color, icon);
     });
+  }
+  updateInitialColor(e) {
+    const activeDiv = e.target.parentElement.parentElement;
+    const index = activeDiv.classList[1];
+    const color = chroma(activeDiv.style.backgroundColor).hex();
+    this.initialColors.splice(index, 1, color);
   }
   setDefault() {
     const sliders = document.querySelectorAll('input[type="range"]');
@@ -337,7 +343,10 @@ function init() {
   });
 
   colors.colorDivs.forEach((div) => {
-    div.addEventListener("change", (e) => colors.updateTextUI(e));
+    div.addEventListener("change", (e) => {
+      colors.updateTextUI(e);
+      colors.updateInitialColor(e);
+    });
   }); //sliders eventlistener change fine too but this code is more neat
 
   colors.currentHexes.forEach((hex) => {
