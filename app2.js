@@ -272,7 +272,7 @@ class Colors {
         this.initialColors.push(color);
         this.colorDivs[index].style.backgroundColor = color;
         const text = this.colorDivs[index].querySelector("h2");
-        text.innerText = color;
+        text.innerText = color.toUpperCase();
         this.checkContrast(color, text);
         const icons = this.colorDivs[index].querySelectorAll(
           ".color-controls button"
